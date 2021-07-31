@@ -3,7 +3,7 @@ from ctypes import *
 import numpy as np
 
 from .Mesh import Mesh
-from .GLTFTools import *
+from .GLTFTools import GLTFFile, Node
 
 
 class Model:
@@ -11,10 +11,10 @@ class Model:
         self.root = GLTFFile(path, binary)
 
         for rootNode in self.root.scene.nodes:
-            self.__processNode()
+            self.__processNode(rootNode)
 
-    def __processNode(self, node):
-        for nodeMesh in node.meshes:
+    def __processNode(self, node: Node):
+        for nodeMesh in node.mesh:
             mesh = Mesh()
 
             # vertex buffer

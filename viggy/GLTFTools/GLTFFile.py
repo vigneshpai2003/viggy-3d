@@ -64,7 +64,7 @@ class GLTFFile:
         for i in range(len(self.jsonData["scenes"])):
             Scene(self, i)
 
-        self.scene = self.scenes[self.jsonData["scene"]]
+        self.scene: Scene = self.scenes[self.jsonData["scene"]]
 
     def __makeArray(self, key: str) -> Optional[list]:
         if key in self.jsonData:

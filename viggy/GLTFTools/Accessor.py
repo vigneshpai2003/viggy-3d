@@ -42,11 +42,11 @@ componentFormat = {ComponentType.BYTE: 'c',
 
 componentNumpyType = {ComponentType.BYTE: np.byte,
                       ComponentType.UNSIGNED_BYTE: np.ubyte,
-                      ComponentType.SHORT: 'h',
-                      ComponentType.UNSIGNED_SHORT: 'H',
-                      ComponentType.INT: 'i',
-                      ComponentType.UNSIGNED_INT: 'I',
-                      ComponentType.FLOAT: 'f'}
+                      ComponentType.SHORT: np.short,
+                      ComponentType.UNSIGNED_SHORT: np.ushort,
+                      ComponentType.INT: np.intc,
+                      ComponentType.UNSIGNED_INT: np.uintc,
+                      ComponentType.FLOAT: np.single}
 
 numComponent = {"SCALAR": 1,
                 "VEC2": 2,
@@ -61,10 +61,7 @@ class Accessor(GLTFObject):
     def __init__(self, file: GLTFFile, index: int):
         super().__init__(file, "accessors", index)
 
-        if "bufferView" in self.jsonDict:
-            self.bufferView: BufferView = self.createGLTFObject(BufferView, "bufferViews", self.jsonDict["bufferView"])
-        else:
-            self.bufferView = None
+        self.bufferView = self.createFromKey(BufferView, "bufferViews", "bufferView")
 
         # type of the component as an int directly corresponding to OpenGL datatypes
         self.componentType = ComponentType(self.jsonDict["componentType"])
@@ -83,7 +80,7 @@ class Accessor(GLTFObject):
         self.min = self.getFromJSONDict("min")
         self.max = self.getFromJSONDict("max")
 
-        self.data = np.array(self.__getData(), dtype=componentNumpyType[self.componentType])
+        self.data = np.array(self.__getDataBuffer(), dtype=componentNumpyType[self.componentType])
 
     @property
     def componentSize(self) -> int:
@@ -100,7 +97,7 @@ class Accessor(GLTFObject):
         else:
             return self.componentSize * self.numComponent
 
-    def __getData(self):
+    def __getDataBuffer(self):
         if self.bufferView is None:
             return None
 
@@ -109,9 +106,13 @@ class Accessor(GLTFObject):
         offset = self.byteOffset + self.bufferView.byteOffset
 
         for _ in range(self.count):
-            data.append(struct.unpack_from(
-                '<' + componentFormat[self.componentType] * self.numComponent,
-                self.bufferView.buffer.data[offset: offset + self.componentSize * self.numComponent]))
+            dataArray = struct.unpack_from('<' + componentFormat[self.componentType] * self.numComponent,
+                                           self.bufferView.buffer.data[
+                                           offset: offset + self.componentSize * self.numComponent])
+            if self.numComponent == 1:
+                data.extend(dataArray)
+            else:
+                data.append(dataArray)
             offset += self.stride
 
         return data

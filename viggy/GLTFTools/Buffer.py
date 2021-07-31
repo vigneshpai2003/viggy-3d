@@ -22,6 +22,7 @@ class Buffer(GLTFObject):
     def __loadFromUri(self):
         if self.uri is None and self.file.isBinary:
             return self.file.binaryData
+
         if os.path.isabs(self.uri):
             path = self.uri
         else:

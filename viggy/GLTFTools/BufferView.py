@@ -20,7 +20,7 @@ class BufferView(GLTFObject):
     def __init__(self, file: GLTFFile, index: int):
         super().__init__(file, "bufferViews", index)
 
-        self.buffer = self.createGLTFObject(Buffer, "buffers", self.jsonDict["buffer"])
+        self.buffer = self.createFromKey(Buffer, "buffers", "buffer")
 
         # the length of data owned in bytes, need not be continuous
         self.byteLength: int = self.jsonDict["byteLength"]
@@ -30,7 +30,7 @@ class BufferView(GLTFObject):
 
         self.byteStride: int = self.getFromJSONDict("byteStride")
 
-        if "target" in self.jsonDict:
-            self.target = BufferTarget(self.jsonDict["target"])
-        else:
-            self.target = None
+        self.target = self.__getTarget()
+
+    def __getTarget(self) -> BufferTarget:
+        return BufferTarget(self.jsonDict["target"]) if "target" in self.jsonDict else None

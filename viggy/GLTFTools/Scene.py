@@ -13,8 +13,4 @@ class Scene(GLTFObject):
     def __init__(self, file: GLTFFile, index: int):
         super().__init__(file, "scenes", index)
 
-        # root nodes
-        if "nodes" in self.jsonDict:
-            self.nodes: List[Node] = [self.createGLTFObject(Node, "nodes", i) for i in self.jsonDict["nodes"]]
-        else:
-            self.nodes = None
+        self.rootNodes = self.createArrayFromKey(Node, "nodes", "nodes")

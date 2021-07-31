@@ -31,13 +31,7 @@ class Node(GLTFObject):
         # model = matrix * T * R * S
 
         # mesh
-        if "mesh" in self.jsonDict:
-            self.mesh: Mesh = self.createGLTFObject(Mesh, "meshes", self.jsonDict["mesh"])
-        else:
-            self.mesh = None
+        self.mesh = self.createFromKey(Mesh, "meshes", "mesh")
 
         # children
-        if "children" in self.jsonDict:
-            self.children: List[Node] = [self.createGLTFObject(Node, "nodes", i) for i in self.jsonDict["children"]]
-        else:
-            self.children = None
+        self.children = self.createArrayFromKey(Node, "nodes", "children")

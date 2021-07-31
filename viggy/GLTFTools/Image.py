@@ -20,10 +20,7 @@ class Image(GLTFObject):
 
         self.uri: str = self.getFromJSONDict("uri")
 
-        if "bufferView" in self.jsonDict:
-            self.bufferView = self.createGLTFObject(BufferView, "bufferViews", self.jsonDict["bufferView"])
-        else:
-            self.bufferView = None
+        self.bufferView = self.createFromKey(BufferView, "bufferViews", "bufferView")
 
         # mime type is defined when bufferView is not None, one of "image/jpeg" or "image/png"
         self.mimeType = self.getFromJSONDict("mimeType")

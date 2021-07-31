@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, List
+from typing import TYPE_CHECKING, List
 
 if TYPE_CHECKING:
     from .GLTFFile import GLTFFile
@@ -22,11 +22,7 @@ class Material(GLTFObject):
         # applicable only in "MASK" mode
         self.alphaCutoff: float = self.getFromJSONDict("alphaCutoff", 0.5)
 
-        # pbr details
-        if "pbrMetallicRoughness" in self.jsonDict:
-            self.pbrInfo = PBRInfo(file, self.jsonDict["pbrMetallicRoughness"])
-        else:
-            self.pbrInfo = None
+        self.pbrInfo = self.__getPBRInfo()
 
         # normal texture map
         """
@@ -37,26 +33,33 @@ class Material(GLTFObject):
         in GLSL, texture() maps RGB to [0, 1]
         vec3 normalVector = normalize(texture(<normalMap>, texCoord) * 2 - 1)
         """
-        if "normalTexture" in self.jsonDict:
-            self.normalTextureInfo = NormalTextureInfo(file, self.jsonDict["normalTexture"])
-        else:
-            self.normalTextureInfo = None
+        self.normalTextureInfo = self.__getNormalTextureInfo()
 
         # occlusion texture map
         # Consider only R value for each texel, indicates how much indirect light (ambient light) should be received
-        if "occlusionTexture" in self.jsonDict:
-            self.occlusionTextureInfo = OcclusionTextureInfo(file, self.jsonDict["occlusionTexture"])
-        else:
-            self.occlusionTextureInfo = None
+        self.occlusionTextureInfo = self.__getOcclusionTextureInfo()
 
         # emmisive texture map
-        if "emissiveTexture" in self.jsonDict:
-            self.emissiveTextureInfo = TextureInfo(file, self.jsonDict["emissiveTexture"])
-        else:
-            self.emissiveTextureInfo = None
+        self.emissiveTextureInfo = None
 
         # multiply each value with R,G,B from emmisiveTexture Texel
-        self.emissiveFactor: Optional[List[float, float, float]] = self.getFromJSONDict("emissiveFactor", [0, 0, 0])
+        self.emissiveFactor: List[float, float, float] = self.getFromJSONDict("emissiveFactor", [0, 0, 0])
+
+    def __getPBRInfo(self) -> PBRInfo:
+        return PBRInfo(self.file, self.jsonDict["pbrMetallicRoughness"])\
+            if "pbrMetallicRoughness" in self.jsonDict else None
+
+    def __getNormalTextureInfo(self) -> NormalTextureInfo:
+        return NormalTextureInfo(self.file, self.jsonDict["normalTexture"])\
+            if "normalTexture" in self.jsonDict else None
+
+    def __getOcclusionTextureInfo(self) -> OcclusionTextureInfo:
+        return OcclusionTextureInfo(self.file, self.jsonDict["normalTexture"])\
+            if "occlusionTexture" in self.jsonDict else None
+
+    def __getEmissiveTextureInfo(self) -> TextureInfo:
+        return TextureInfo(self.file, self.jsonDict["normalTexture"])\
+            if "emissiveTexture" in self.jsonDict else None
 
 
 class PBRInfo:

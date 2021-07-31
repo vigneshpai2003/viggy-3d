@@ -27,15 +27,15 @@ class Sampler(GLTFObject):
     def __init__(self, file, index: int):
         super().__init__(file, "samplers", index)
 
-        if "magFilter" in self.jsonDict:
-            self.magFilter = TextureMagFilter(self.jsonDict["magFilter"])
-        else:
-            self.magFilter = None
-
-        if "minFilter" in self.jsonDict:
-            self.minFilter = TextureMinFilter(self.jsonDict["minFilter"])
-        else:
-            self.minFilter = None
+        self.magFilter = self.__getMagFilter()
+        self.minFilter = self.__getMinFilter()
 
         self.wrapS = TextureWrap(self.getFromJSONDict("wrapS", int(TextureWrap.REPEAT)))
         self.wrapT = TextureWrap(self.getFromJSONDict("wrapT", int(TextureWrap.REPEAT)))
+
+    def __getMagFilter(self):
+        return TextureMagFilter(self.jsonDict["magFilter"]) if "magFilter" in self.jsonDict else None
+
+    def __getMinFilter(self):
+        return TextureMinFilter(self.jsonDict["minFilter"]) if "minFilter" in self.jsonDict else None
+

@@ -9,7 +9,7 @@ from enum import IntEnum
 
 from .Material import Material
 from .Accessor import Accessor
-from .GLTFObject import getFromJSONDict, createGLTFObject
+from .GLTFObject import getFromJSONDict, createFromKey
 
 
 class PrimitiveMode(IntEnum):
@@ -31,16 +31,10 @@ class Primitive:
         self.mode = PrimitiveMode(getFromJSONDict(self.jsonDict, "mode", 4))
 
         # index buffer
-        if "indices" in self.jsonDict:
-            self.indices: Accessor = createGLTFObject(file, Accessor, "accessors", self.jsonDict["indices"])
-        else:
-            self.indices = None
+        self.indices = createFromKey(file, Accessor, "accessors", self.jsonDict, "indices")
 
         # material
-        if "material" in self.jsonDict:
-            self.material: Material = createGLTFObject(file, Material, "materials", self.jsonDict["material"])
-        else:
-            self.material = None
+        self.material: Material = createFromKey(file, Material, "materials", self.jsonDict, "material")
 
 
 class Attribute:
@@ -51,20 +45,9 @@ class Attribute:
         # however all values are accessor indices
         # POSITION, NORMAL, TANGENT, TEXCOORD_n are expected to be present as keys
 
-        if "POSITION" in self.jsonDict:
-            self.position = Accessor(file, self.jsonDict["POSITION"])
-        else:
-            self.position = None
-
-        if "NORMAL" in self.jsonDict:
-            self.normal = Accessor(file, self.jsonDict["NORMAL"])
-        else:
-            self.normal = None
-
-        if "TANGENT" in self.jsonDict:
-            self.tangent = Accessor(file, self.jsonDict["TANGENT"])
-        else:
-            self.tangent = None
+        self.position = self.__getAttribute(file, "POSITION")
+        self.normal = self.__getAttribute(file, "NORMAL")
+        self.tangent = self.__getAttribute(file, "TANGENT")
 
         n = 0
         while True:
@@ -73,3 +56,6 @@ class Attribute:
             else:
                 break
             n += 1
+
+    def __getAttribute(self, file, attribute: str) -> Accessor:
+        return Accessor(file, self.jsonDict[attribute]) if attribute in self.jsonDict else None

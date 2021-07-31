@@ -18,12 +18,12 @@ class TextureInfo:
 
 
 class NormalTextureInfo(TextureInfo):
-    def __init__(self, file, infoDict: dict):
+    def __init__(self, file: GLTFFile, infoDict: dict):
         super().__init__(file, infoDict)
         self.scale: int = getFromJSONDict(self.jsonDict, "scale", 1)
 
 
 class OcclusionTextureInfo(TextureInfo):
-    def __init__(self, file, infoDict: dict):
+    def __init__(self, file: GLTFFile, infoDict: dict):
         super().__init__(file, infoDict)
         self.strength: int = getFromJSONDict(self.jsonDict, "strength", 1)

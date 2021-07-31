@@ -14,12 +14,6 @@ class Texture(GLTFObject):
     def __init__(self, file: GLTFFile, index: int):
         super().__init__(file, "textures", index)
 
-        if "sampler" in self.jsonDict:
-            self.sampler: Sampler = self.createGLTFObject(Sampler, "samplers", self.jsonDict["sampler"])
-        else:
-            self.sampler = None
+        self.sampler = self.createFromKey(Sampler, "samplers", "sampler")
 
-        if "source" in self.jsonDict:
-            self.image: Image = self.createGLTFObject(Image, "images", self.jsonDict["source"])
-        else:
-            self.image = None
+        self.image = self.createFromKey(Image, "images", "source")
