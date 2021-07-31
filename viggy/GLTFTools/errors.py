@@ -1,0 +1,2 @@
+class GLTFImportError(Exception):
+    pass
