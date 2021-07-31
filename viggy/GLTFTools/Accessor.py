@@ -3,10 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .core import GLTFFile
+    from .GLTFFile import GLTFFile
 
 from enum import IntEnum
 import struct
+
+import numpy as np
 
 from .GLTFObject import GLTFObject
 from .BufferView import BufferView
@@ -22,14 +24,29 @@ class ComponentType(IntEnum):
     FLOAT = 5126
 
 
-def componentSize(componentType: ComponentType) -> int:
-    if componentType in (ComponentType.BYTE, ComponentType.UNSIGNED_BYTE):
-        return 1
-    elif componentType in (ComponentType.SHORT, ComponentType.UNSIGNED_SHORT):
-        return 2
-    elif componentType in (ComponentType.UNSIGNED_INT, ComponentType.FLOAT):
-        return 4
+componentSize = {ComponentType.BYTE: 1,
+                 ComponentType.UNSIGNED_BYTE: 1,
+                 ComponentType.SHORT: 2,
+                 ComponentType.UNSIGNED_SHORT: 2,
+                 ComponentType.INT: 4,
+                 ComponentType.UNSIGNED_INT: 4,
+                 ComponentType.FLOAT: 4}
 
+componentFormat = {ComponentType.BYTE: 'c',
+                   ComponentType.UNSIGNED_BYTE: 'B',
+                   ComponentType.SHORT: 'h',
+                   ComponentType.UNSIGNED_SHORT: 'H',
+                   ComponentType.INT: 'i',
+                   ComponentType.UNSIGNED_INT: 'I',
+                   ComponentType.FLOAT: 'f'}
+
+componentNumpyType = {ComponentType.BYTE: np.byte,
+                      ComponentType.UNSIGNED_BYTE: np.ubyte,
+                      ComponentType.SHORT: 'h',
+                      ComponentType.UNSIGNED_SHORT: 'H',
+                      ComponentType.INT: 'i',
+                      ComponentType.UNSIGNED_INT: 'I',
+                      ComponentType.FLOAT: 'f'}
 
 numComponent = {"SCALAR": 1,
                 "VEC2": 2,
@@ -66,11 +83,11 @@ class Accessor(GLTFObject):
         self.min = self.getFromJSONDict("min")
         self.max = self.getFromJSONDict("max")
 
-        self.data = self.__getData()
+        self.data = np.array(self.__getData(), dtype=componentNumpyType[self.componentType])
 
     @property
     def componentSize(self) -> int:
-        return componentSize(self.componentType)
+        return componentSize[self.componentType]
 
     @property
     def numComponent(self) -> int:
@@ -91,25 +108,10 @@ class Accessor(GLTFObject):
 
         offset = self.byteOffset + self.bufferView.byteOffset
 
-        if self.componentType == ComponentType.BYTE:
-            formatChar = 'c'
-        elif self.componentType == ComponentType.UNSIGNED_BYTE:
-            formatChar = 'B'
-        elif self.componentType == ComponentType.SHORT:
-            formatChar = 'h'
-        elif self.componentType == ComponentType.UNSIGNED_SHORT:
-            formatChar = 'H'
-        elif self.componentType == ComponentType.INT:
-            formatChar = 'i'
-        elif self.componentType == ComponentType.UNSIGNED_INT:
-            formatChar = 'I'
-        else:  # elif self.componentType == ComponentType.FLOAT:
-            formatChar = 'f'
-
         for _ in range(self.count):
             data.append(struct.unpack_from(
-                        '<' + formatChar * self.numComponent,
-                        self.bufferView.buffer.data[offset: offset + self.componentSize * self.numComponent]))
+                '<' + componentFormat[self.componentType] * self.numComponent,
+                self.bufferView.buffer.data[offset: offset + self.componentSize * self.numComponent]))
             offset += self.stride
 
         return data

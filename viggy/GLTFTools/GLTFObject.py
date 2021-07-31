@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Type, TypeVar
 
 if TYPE_CHECKING:
-    from .core import GLTFFile
+    from .GLTFFile import GLTFFile
 
 
 T = TypeVar('T')

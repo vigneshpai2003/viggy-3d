@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Optional, List
 
 if TYPE_CHECKING:
-    from .core import GLTFFile
+    from .GLTFFile import GLTFFile
 
 from .TextureInfo import NormalTextureInfo, OcclusionTextureInfo, TextureInfo
 from .GLTFObject import GLTFObject, getFromJSONDict

@@ -1,1 +1,1 @@
-from .core import GLTFFile
+from .GLTFFile import GLTFFile

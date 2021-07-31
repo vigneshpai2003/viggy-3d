@@ -1,4 +1,4 @@
 from viggy.GLTFTools import *
 
-car = GLTFFile("car.glb", True)
+car = GLTFFile("extra/car.glb", True)
 print(car)

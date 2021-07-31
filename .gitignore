@@ -1,7 +1,8 @@
 .idea/
 __pycache__/
+viggy/__pycache__/
+viggy/GLTFTools/__pycache__/
 backpack/
 backpackgltf/
 textures/
 extra/
-
