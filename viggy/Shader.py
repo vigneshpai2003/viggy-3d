@@ -8,20 +8,20 @@ import OpenGL.GL as GL
 class Shader:
     def __init__(self, shader_dir: str):
         """
-        :param shader_dir: directory must contain vertex.gl, fragment.gl, and optionally geometry.gl
+        :param shader_dir: directory must contain vertex.glsl, fragment.glsl, and optionally geometry.glsl
         """
         compiledShaders = []
         # key is uniform name and value is a tuple of uniform type followed by uniform location
         self.uniforms: Dict[str, Union[Tuple[str, int], Tuple[Tuple[Tuple[str, str]], List[int]]]] = dict()
 
-        with open(shader_dir.rstrip('/') + "/vertex.gl", 'r') as f:
+        with open(shader_dir.rstrip('/') + "/vertex.glsl", 'r') as f:
             compiledShaders.append(GL.shaders.compileShader(f.read(), GL.GL_VERTEX_SHADER))
 
-        with open(shader_dir.rstrip('/') + "/fragment.gl", 'r') as f:
+        with open(shader_dir.rstrip('/') + "/fragment.glsl", 'r') as f:
             compiledShaders.append(GL.shaders.compileShader(f.read(), GL.GL_FRAGMENT_SHADER))
 
         try:
-            with open(shader_dir.rstrip('/') + "/geometry.gl", 'r') as f:
+            with open(shader_dir.rstrip('/') + "/geometry.glsl", 'r') as f:
                 compiledShaders.append(GL.shaders.compileShader(f.read(), GL.GL_GEOMETRY_SHADER))
 
         except FileNotFoundError:
@@ -34,7 +34,7 @@ class Shader:
             GL.glDeleteShader(shader)
 
         # add uniforms
-        for file in ("vertex.gl", "fragment.gl", "geometry.gl"):
+        for file in ("vertex.glsl", "fragment.glsl", "geometry.glsl"):
             try:
                 with open(shader_dir.rstrip('/') + f"/{file}", 'r') as f:
                     self.__addUniformsFromFile(f)
