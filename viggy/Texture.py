@@ -15,7 +15,7 @@ class Texture:
         GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT)
 
         img = Image.open(f_path)
-        img = img.transpose(Image.FLIP_TOP_BOTTOM)  # needed due to internal storage format in GLSL
+        # img = img.transpose(Image.FLIP_TOP_BOTTOM)  # needed due to internal storage format in GLSL
 
         # send data to OpenGL
         # (texture_type, 0, internal format, width, height, border, OpenGL format, type, data)

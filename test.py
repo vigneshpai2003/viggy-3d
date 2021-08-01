@@ -1,4 +1,5 @@
-from viggy.GLTFTools import *
+from viggy.GLTFImporter import *
 
 car = GLTFFile("extra/car.glb", True)
-print(car)
+for node in car.nodes:
+    print(node.globalTransform)

@@ -1,14 +1,17 @@
-import numpy as np
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import numpy as np
+
 import OpenGL.GL as GL
 
 
 class IndexBuffer:
     def __init__(self, array: np.ndarray):
-        """
-        :param array:  shape(n,3), dtype(uint)
-        """
-        self.length = array.shape[0]
-        self.buffer = array.flatten()  # is passed to OpenGL flattened
+        self.buffer = array
+        self.length = array.size // 3  # number of faces
         self.glBuffer = GL.glGenBuffers(1)
         self.bind()
         GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, self.buffer.nbytes, self.buffer, GL.GL_STATIC_DRAW)

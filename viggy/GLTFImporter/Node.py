@@ -5,6 +5,8 @@ from typing import TYPE_CHECKING, List
 if TYPE_CHECKING:
     from .GLTFFile import GLTFFile
 
+import math
+
 import glm
 
 from .GLTFObject import GLTFObject
@@ -32,7 +34,7 @@ class Node(GLTFObject):
         self.localTransform = self.__getLocalTransform()
 
         if parent is not None:
-            self.globalTransform = self.localTransform * parent.globalTransform
+            self.globalTransform = parent.globalTransform * self.localTransform
         else:
             self.globalTransform = self.localTransform
 
@@ -44,14 +46,15 @@ class Node(GLTFObject):
 
     def __getLocalTransform(self):
         if self.matrix is not None:
-            return glm.mat4([[self.matrix[:4],
-                              self.matrix[4:8],
-                              self.matrix[8:12],
-                              self.matrix[12:16]]])
+            return glm.mat4([self.matrix[:4],
+                             self.matrix[4:8],
+                             self.matrix[8:12],
+                             self.matrix[12:16]])
         else:
-            transform = glm.mat4()
-            glm.scale(transform, self.scale)
+            scale = glm.scale(glm.mat4(), self.scale)
             if self.rotation != [0.0, 0.0, 0.0, 1.0]:
-                glm.rotate(transform, self.rotation[-1], self.rotation[:3])
-            glm.translate(transform, self.translation)
-            return transform
+                rotation = glm.rotate(glm.mat4(), math.degrees(self.rotation[-1]), self.rotation[:3])
+            else:
+                rotation = glm.mat4()
+            translate = glm.translate(glm.mat4(), self.translation)
+            return translate * rotation * scale

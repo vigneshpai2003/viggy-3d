@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout
 from PyQt5.QtGui import QMouseEvent
 from PyQt5.QtOpenGL import QGLWidget, QGLFormat
 
-from viggy.importer import *
+from viggy.WavefrontImporter.importer import *
 
 
 def get_func_vertex_data(func: Callable[[float, float], float],

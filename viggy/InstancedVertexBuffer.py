@@ -1,12 +1,12 @@
-from typing import Tuple
+from typing import TYPE_CHECKING, Tuple
+
+if TYPE_CHECKING:
+    import numpy as np
 
 import OpenGL.GL as GL
-import numpy as np
-
-from .VertexBuffer import VertexBuffer
 
 
-class InstancedVertexBuffer(VertexBuffer):
+class InstancedVertexBuffer:
     def __init__(self, array: np.ndarray, indices: Tuple, layout: Tuple, divisors: Tuple):
         """
         :param array:
@@ -16,9 +16,5 @@ class InstancedVertexBuffer(VertexBuffer):
                 0: update for every iteration of vertex shader
                 n: update for after every n instance drawings
         """
-        super().__init__(array, indices, layout)
-
-        self.divisors = divisors
-
         for i in range(self.vertexAttributesNo):
             GL.glVertexAttribDivisor(self.indices[i], self.divisors[i])

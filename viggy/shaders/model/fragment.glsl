@@ -55,15 +55,16 @@ vec3 calcLight(Material _material,
     vec3 specular = specularFactor * _light.specular * _material.specular;
 
     // loss in light due to distance
-	float distance = length(light.position - frag_pos);
+	float distance = length(light.position - _fragPos);
 	float attenuation = 1.0 / (light.k.x + light.k.y * distance + light.k.z * distance * distance);
 
-	return (ambience + diffuse + specular) * attenuation;
+	return (ambient + diffuse + specular) * attenuation;
 }
 
 
 void main()
 {
-    gl_FragColor = vec4(calcLight(material, light, fs_in.position, camera_pos, fs_in.normal), 1.0) *
+    gl_FragColor = vec4(calcLight(material, light, fs_in.position, cameraPos, fs_in.normal), 1.0) *
                    texture(diffuseTexture, fs_in.UV);
+    // gl_FragColor = vec4(1, 1, 1, 1);
 }

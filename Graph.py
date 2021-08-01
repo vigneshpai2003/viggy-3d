@@ -1,10 +1,10 @@
 from __future__ import annotations
+
 import math
 import time
 from typing import List
 
 import glm
-import numpy as np
 from OpenGL import GL
 from PySide6.QtCore import QTimer, Qt
 from PySide6.QtGui import QMouseEvent, QSurfaceFormat, QKeyEvent
@@ -14,12 +14,9 @@ from viggy.Camera import Camera
 from viggy.Light import Light
 from viggy.Mesh import Mesh
 from viggy.Model import Model
-from viggy.Texture import Texture
-from viggy.importer import loadObject
 from viggy.Shader import Shader
-from viggy.SkyBox import SkyBox
+from viggy.Texture import Texture
 from viggy.colors import fromRGB
-from viggy.vertexData import cubeVertices, cubeIndices
 
 
 class Graph(QOpenGLWidget):
@@ -61,9 +58,6 @@ class Graph(QOpenGLWidget):
 
     def addLights(self, *lights: Light):
         self.lights.extend(lights)
-
-    def createMeshes(self, n: int):
-        self.meshes.extend([Mesh() for _ in range(n)])
 
     def addMeshes(self, *meshes: Mesh):
         self.meshes.extend(meshes)
@@ -167,80 +161,30 @@ class Graph(QOpenGLWidget):
         GL.glEnable(GL.GL_BLEND)
         GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
 
-        # box instance arrays
-        box_instances = []
-        for i in range(-30, 31):
-            for j in range(-30, 31):
-                box_instances.extend([i, 0, j])
+        self.model = Model("backpackgltf/scene.gltf")
+        # self.model = Model("extra/car.glb", True)
 
-        box_instances = np.array(box_instances, dtype=np.float32)
+        self.modelShader = Shader("viggy/shaders/model")
+        self.addShaders(self.modelShader)
 
-        # test_obj instance arrays
-        test_obj_instances = []
-        for i in range(-3, 4):
-            for j in range(-3, 4):
-                test_obj_instances.extend([i, 0, j])
+        self.modelShader.setUniform("material", ((1.0, 1.0, 1.0),
+                                                 (1.0, 1.0, 1.0),
+                                                 (1.0, 1.0, 1.0),
+                                                 16.0))
 
-        test_obj_instances = 3 * np.array(test_obj_instances, dtype=np.float32)
-
-        # skybox
-        self.skyBox = SkyBox("viggy/skyboxes/ocean", "jpg")
-
-        self.car = Model("backpack/backpack.obj")
-
-        # initialize meshes
-        self.createMeshes(5)
-        light_mesh, box, test_obj, test_obj_mesh, test_obj_normals = self.meshes
-
-        light_mesh.addVBO(cubeVertices, (0, 1, 2), (3, 2, 3))
-        light_mesh.addIBO(cubeIndices)
-
-        box.addVBO(cubeVertices, (0, 1, 2), (3, 2, 3))
-        box.addIVBO(box_instances, (3,), (3,), (1,))
-        box.addIBO(cubeIndices)
-
-        test_obj.addVBO(loadObject("viggy/meshes/chibi.obj"), (0, 1, 2), (3, 2, 3))
-        test_obj.addIVBO(test_obj_instances, (3,), (3,), (1,))
-
-        test_obj_mesh.addVBO(loadObject("viggy/meshes/chibi.obj", UV=False, normals=False), (0,), (3,))
-        test_obj_normals.addVBO(loadObject("viggy/meshes/chibi.obj", UV=False, normals=True), (0, 1), (3, 3))
-
-        # initialize shaders
-        self.addShaders(Shader("viggy/shaders/light"),
-                        Shader("viggy/shaders/object"),
-                        Shader("viggy/shaders/mesh"),
-                        Shader("viggy/shaders/normal"),
-                        Shader("viggy/shaders/sky_box"))
-
-        shader_light, shader_object, shader_mesh, shader_normal, shader_sky_box = self.shaders
-
-        shader_light.setUniform("light_color", (1, 1, 1))
-
-        shader_object.setUniform("material", (1.0, 1.0, 1.0, 16.0))
-        shader_object.setUniform("light", (self.lights[0].position,
-                                           self.lights[0].ambient,
-                                           self.lights[0].diffuse,
-                                           self.lights[0].specular,
-                                           self.lights[0].k))
-
-        shader_mesh.setUniform("color", (1.0, 1.0, 1.0))
-
-        shader_normal.setUniform("color", (1.0, 0.0, 1.0))
-        shader_normal.setUniform("size", 0.5)  # size is wrt to object without any scaling
+        self.modelShader.setUniform("light", (self.lights[0].position,
+                                              self.lights[0].ambient,
+                                              self.lights[0].diffuse,
+                                              self.lights[0].specular,
+                                              self.lights[0].k))
 
         # initialize textures
-        box_texture = Texture("viggy/textures/woodbox.png")
-        test_obj_texture = Texture("viggy/textures/chibi.png")
-        self.addTextures(box_texture, test_obj_texture)
+        self.modelTexture = Texture("backpackgltf/textures/Scene_-_Root_baseColor.jpeg")
+        self.addTextures(self.modelTexture)
 
     def paintGL(self):
         # clear buffers
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
-
-        # meshes and shaders and textures
-        light_mesh, box, test_obj, test_obj_mesh, test_obj_normal = self.meshes
-        shader_light, shader_object, shader_mesh, shader_normal, shader_sky_box = self.shaders
-        box_texture, test_obj_texture = self.textures
 
         # set the view and projection matrices for all shaders
         self.setVP()
@@ -249,44 +193,13 @@ class Graph(QOpenGLWidget):
         self.lights[0].position.x = math.sin(time.perf_counter())
 
         # set lights and camera uniforms
-        shader_object.setUniform("camera_pos", self.activeCamera.position)
-        shader_object.setUniform("light.position", self.lights[0].position)
-
-        # draw skybox first
-        shader_sky_box.use()
-        self.skyBox.draw()
-
-        # draw light
-        model = glm.translate(glm.mat4(1.0), self.lights[0].position) * \
-                glm.scale(glm.mat4(1.0), glm.vec3(0.1, 0.1, 0.1))
-        shader_light.setUniform("model", glm.value_ptr(model))
-        light_mesh.draw()
-
-        # draw box
-        box_texture.bind(0)
-        model = glm.translate(glm.mat4(1.0), glm.vec3(0, -0.5, 0))
-        shader_object.setUniform("model", glm.value_ptr(model))
-        shader_object.setUniform("texture", 0)
-        box.draw()
+        self.modelShader.setUniform("cameraPos", self.activeCamera.position)
+        self.modelShader.setUniform("light.position", self.lights[0].position)
 
         # model for test object, mesh and normal
-        model = glm.rotate(glm.mat4(1.0), 0.3 * time.perf_counter(), glm.vec3(0.0, 1.0, 0.0)) * \
-                glm.scale(glm.mat4(1.0), glm.vec3(.1, .1, .1))
+        model = glm.scale(glm.mat4(1.0), glm.vec3(.01, .01, .01))
 
         # draw test object
-        test_obj_texture.bind(0)
-        shader_object.setUniform("model", glm.value_ptr(model))
-        shader_object.setUniform("texture", 0)
-        test_obj.draw()
-
-        # draw test object mesh
-        shader_mesh.setUniform("model", glm.value_ptr(model))
-        test_obj_mesh.draw()
-
-        # draw test object normals
-        shader_normal.setUniform("model", glm.value_ptr(model))
-        test_obj_normal.draw()
-
-        model = glm.translate(glm.mat4(), glm.vec3(0, 3, 0))  # * glm.scale(glm.mat4(), glm.vec3(0.1, 0.1, 0.1))
-        shader_object.setUniform("model", glm.value_ptr(model))
-        self.car.draw()
+        self.modelTexture.bind(0)
+        self.modelShader.setUniform("diffuseTexture", 0)
+        self.model.draw(self.modelShader, model)

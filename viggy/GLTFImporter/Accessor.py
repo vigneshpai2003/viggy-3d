@@ -40,10 +40,10 @@ componentFormat = {ComponentType.BYTE: 'c',
                    ComponentType.UNSIGNED_INT: 'I',
                    ComponentType.FLOAT: 'f'}
 
-componentNumpyType = {ComponentType.BYTE: np.byte,
-                      ComponentType.UNSIGNED_BYTE: np.ubyte,
-                      ComponentType.SHORT: np.short,
-                      ComponentType.UNSIGNED_SHORT: np.ushort,
+componentNumpyType = {ComponentType.BYTE: np.intc,
+                      ComponentType.UNSIGNED_BYTE: np.uintc,
+                      ComponentType.SHORT: np.intc,
+                      ComponentType.UNSIGNED_SHORT: np.uintc,
                       ComponentType.INT: np.intc,
                       ComponentType.UNSIGNED_INT: np.uintc,
                       ComponentType.FLOAT: np.single}

@@ -12,7 +12,7 @@ from PySide6.QtOpenGLWidgets import QOpenGLWidget
 
 from viggy.Camera import Camera
 from viggy.Light import Light
-from viggy.importer import Renderer, loadObject
+from viggy.WavefrontImporter.importer import Renderer, loadObject
 from viggy.Shader import Shader
 from viggy.SkyBox import SkyBox
 from viggy.vertexData import cubeVertices, cubeIndices

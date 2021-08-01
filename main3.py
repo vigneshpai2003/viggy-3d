@@ -11,7 +11,7 @@ from viggy.Light import Light
 app = QApplication(sys.argv)
 graph = Graph()
 
-camera = Camera(pos=glm.vec3(0, 2, 2),
+camera = Camera(pos=glm.vec3(0, 0, 5),
                 fov=math.radians(45),
                 z_min=0.1, z_max=100.0)
 camera.setTarget(glm.vec3(0, 0, 0))
