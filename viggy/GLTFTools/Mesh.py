@@ -15,5 +15,4 @@ class Mesh(GLTFObject):
         super().__init__(file, "meshes", index)
 
         # the primitives that the mesh contains
-        self.primitives: List[Primitive] = [Primitive(file, primitiveDict)
-                                            for primitiveDict in self.jsonDict["primitives"]]
+        self.primitives = [Primitive(file, primitiveDict) for primitiveDict in self.jsonDict["primitives"]]

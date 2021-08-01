@@ -13,4 +13,4 @@ class Scene(GLTFObject):
     def __init__(self, file: GLTFFile, index: int):
         super().__init__(file, "scenes", index)
 
-        self.rootNodes = self.createArrayFromKey(Node, "nodes", "nodes")
+        self.rootNodes = self.createArrayFromKey(Node, "nodes", "nodes", None)

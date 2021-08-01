@@ -6,7 +6,7 @@ from .Image import Image
 from .Material import Material, PBRInfo
 from .Mesh import Mesh
 from .Node import Node
-from .Primitive import Primitive
+from .Primitive import Primitive, PrimitiveMode
 from .Sampler import Sampler
 from .Scene import Scene
 from .Texture import Texture
