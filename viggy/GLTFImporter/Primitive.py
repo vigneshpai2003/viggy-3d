@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from .GLTFFile import GLTFFile
@@ -28,13 +28,13 @@ class Primitive:
 
         self.attributes = Attribute(file, self.jsonDict["attributes"])
 
-        self.mode = PrimitiveMode(getFromJSONDict(self.jsonDict, "mode", 4))
+        self.mode: PrimitiveMode = PrimitiveMode(getFromJSONDict(self.jsonDict, "mode", 4))
 
         # index buffer
         self.indices = createFromKey(file, Accessor, "accessors", self.jsonDict, "indices")
 
         # material
-        self.material: Material = createFromKey(file, Material, "materials", self.jsonDict, "material")
+        self.material = createFromKey(file, Material, "materials", self.jsonDict, "material")
 
 
 class Attribute:
@@ -57,5 +57,5 @@ class Attribute:
                 break
             n += 1
 
-    def __getAttribute(self, file, attribute: str) -> Accessor:
+    def __getAttribute(self, file, attribute: str) -> Optional[Accessor]:
         return Accessor(file, self.jsonDict[attribute]) if attribute in self.jsonDict else None

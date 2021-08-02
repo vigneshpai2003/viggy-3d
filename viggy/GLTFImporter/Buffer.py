@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from .GLTFFile import GLTFFile
@@ -15,7 +15,7 @@ class Buffer(GLTFObject):
         super().__init__(file, "buffers", index)
 
         self.byteLength: int = self.jsonDict["byteLength"]
-        self.uri: str = self.getFromJSONDict("uri")
+        self.uri: Optional[str] = self.getFromJSONDict("uri")
 
         self.data = self.__loadFromUri()
 

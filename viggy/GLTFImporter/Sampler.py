@@ -1,4 +1,5 @@
 from enum import IntEnum
+from typing import Optional
 
 from viggy.GLTFImporter.GLTFObject import GLTFObject
 
@@ -27,15 +28,21 @@ class Sampler(GLTFObject):
     def __init__(self, file, index: int):
         super().__init__(file, "samplers", index)
 
-        self.magFilter = self.__getMagFilter()
-        self.minFilter = self.__getMinFilter()
+        if "magFilter" in self.jsonDict:
+            self.magFilter: Optional[TextureMagFilter] = TextureMagFilter(self.jsonDict["magFilter"])
+        else:
+            self.magFilter: Optional[TextureMagFilter] = None
+
+        if "minFilter" in self.jsonDict:
+            self.minFilter: Optional[TextureMinFilter] = TextureMinFilter(self.jsonDict["minFilter"])
+        else:
+            self.minFilter: Optional[TextureMinFilter] = None
 
         self.wrapS = TextureWrap(self.getFromJSONDict("wrapS", int(TextureWrap.REPEAT)))
         self.wrapT = TextureWrap(self.getFromJSONDict("wrapT", int(TextureWrap.REPEAT)))
 
     def __getMagFilter(self):
-        return TextureMagFilter(self.jsonDict["magFilter"]) if "magFilter" in self.jsonDict else None
+        return
 
     def __getMinFilter(self):
-        return TextureMinFilter(self.jsonDict["minFilter"]) if "minFilter" in self.jsonDict else None
-
+        return

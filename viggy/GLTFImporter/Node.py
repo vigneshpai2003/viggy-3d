@@ -44,7 +44,7 @@ class Node(GLTFObject):
         # children
         self.children = self.createArrayFromKey(Node, "nodes", "children", self)
 
-    def __getLocalTransform(self):
+    def __getLocalTransform(self) -> glm.mat4x4:
         if self.matrix is not None:
             return glm.mat4([self.matrix[:4],
                              self.matrix[4:8],
