@@ -1,3 +1,10 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .Graph import Graph
+
 import glm
 
 
@@ -5,13 +12,15 @@ import glm
 # TODO: quaternion rendering
 
 class Camera:
-    def __init__(self, pos: glm.vec3, fov: float, z_min: float, z_max: float):
+    def __init__(self, graph: Graph, pos: glm.vec3, fov: float, z_min: float, z_max: float):
         """
         :param pos: initial position
         :param fov: field of view, optimal at 45 degrees
         :param z_min: minimum distance for rendering
         :param z_max: maximum distance for rendering
         """
+        self.graph = graph
+        self.graph.addCameras(self)
         self.position = pos
         self.fov = fov
         self.zMin = z_min

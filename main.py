@@ -4,26 +4,39 @@ import sys
 import glm
 from PySide6.QtWidgets import QApplication
 
-from Graph import Graph
+from viggy.Graph import Graph
 from viggy.Camera import Camera
 from viggy.PointLight import PointLight
+from viggy.Model import Model
+from viggy.SkyBox import SkyBox
 
-app = QApplication(sys.argv)
-graph = Graph()
+import viggy.GLTFImporter as gltf
 
-camera = Camera(pos=glm.vec3(0, 0, 5),
-                fov=math.radians(45),
-                z_min=0.1, z_max=100.0)
-camera.setTarget(glm.vec3(0, 0, 0))
 
-light = PointLight(pos=glm.vec3(0.0, 1.3, 0),
-                   ambient=glm.vec3(1, 1, 1),
+class MyGraph(Graph):
+    def initializeGL(self):
+        super().initializeGL()
+
+        self.skyBox = SkyBox("C:/Vignesh/Python/Viggy/viggy/skyboxes/ocean", "jpg")
+
+        camera = Camera(self, pos=glm.vec3(0, 0, 1),
+                        fov=math.radians(45),
+                        z_min=0.1, z_max=100.0)
+        camera.setTarget(glm.vec3(0, 0, 0))
+
+        PointLight(self, pos=glm.vec3(0, 0, 2),
+                   ambient=glm.vec3(.4, .4, .4),
                    diffuse=glm.vec3(1, 1, 1),
                    specular=glm.vec3(1, 1, 1),
-                   k=glm.vec3(2, 0.02, 0.01))
+                   k=glm.vec3(1, 0.2, 0.01))
 
-graph.addCameras(camera)
-graph.addLights(light)
+        model = Model(self, gltf.GLTFFile("C:/Vignesh/Python/Viggy/extra/car.glb", True))
+        # model.setTransform(glm.rotate(glm.scale(glm.mat4(), glm.vec3(.01, .01, .01)), math.radians(70), (1, 0, 0)))
 
-graph.show()
-sys.exit(app.exec())
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    graph = MyGraph()
+
+    graph.show()
+    sys.exit(app.exec())

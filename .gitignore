@@ -3,7 +3,7 @@ __pycache__/
 viggy/__pycache__/
 viggy/GLTFImporter/__pycache__/
 backpack/
-backpackgltf/
+extra/backpackgltf/
 textures/
 extra/
 test.py

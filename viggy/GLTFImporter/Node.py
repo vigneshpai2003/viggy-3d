@@ -5,8 +5,6 @@ from typing import TYPE_CHECKING, List
 if TYPE_CHECKING:
     from .GLTFFile import GLTFFile
 
-import math
-
 import glm
 
 from .GLTFObject import GLTFObject
@@ -53,7 +51,7 @@ class Node(GLTFObject):
         else:
             scale = glm.scale(glm.mat4(), self.scale)
             if self.rotation != [0.0, 0.0, 0.0, 1.0]:
-                rotation = glm.rotate(glm.mat4(), math.degrees(self.rotation[-1]), self.rotation[:3])
+                rotation = glm.mat4_cast(glm.quat([self.rotation[-1], *self.rotation[:3]]))
             else:
                 rotation = glm.mat4()
             translate = glm.translate(glm.mat4(), self.translation)

@@ -1,8 +1,9 @@
+import ctypes
+
 import OpenGL.GL as GL
 
 from PIL import Image
 
-from .VertexBuffer import VertexBuffer
 from .vertexData import skyBoxVertices
 
 
@@ -15,7 +16,12 @@ class SkyBox:
         self.VAO = GL.glGenVertexArrays(1)
         GL.glBindVertexArray(self.VAO)
 
-        self.VBO = VertexBuffer(skyBoxVertices, (0,), (3,))
+        self.VBO = GL.glGenBuffers(1)
+        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.VBO)
+        GL.glBufferData(GL.GL_ARRAY_BUFFER, skyBoxVertices.nbytes, skyBoxVertices, GL.GL_STATIC_DRAW)
+
+        GL.glEnableVertexAttribArray(0)
+        GL.glVertexAttribPointer(0, 3, GL.GL_FLOAT, GL.GL_FALSE, 3 * 4, ctypes.c_void_p(0))
 
         self.cubeMap = GL.glGenTextures(1)
         GL.glBindTexture(GL.GL_TEXTURE_CUBE_MAP, self.cubeMap)

@@ -66,5 +66,4 @@ void main()
 {
     gl_FragColor = vec4(calcLight(material, light, fs_in.position, cameraPos, fs_in.normal), 1.0) *
                    texture(baseTexture, fs_in.UV);
-    // gl_FragColor = vec4(1, 1, 1, 1);
 }

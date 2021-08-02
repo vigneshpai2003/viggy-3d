@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import math
-import time
 from typing import List
 
 import glm
@@ -10,15 +9,11 @@ from PySide6.QtCore import QTimer, Qt
 from PySide6.QtGui import QMouseEvent, QSurfaceFormat, QKeyEvent
 from PySide6.QtOpenGLWidgets import QOpenGLWidget
 
-import viggy.GLTFImporter as gltf
-
-from viggy.Camera import Camera
-from viggy.PointLight import PointLight
-from viggy.Mesh import Mesh
-from viggy.Model import Model
-from viggy.Shader import Shader
-from viggy.Texture import Texture
-from viggy.colors import fromRGB
+from .Camera import Camera
+from .Model import Model
+from .PointLight import PointLight
+from .Shader import Shader
+from .colors import fromRGB
 
 
 class Graph(QOpenGLWidget):
@@ -34,12 +29,13 @@ class Graph(QOpenGLWidget):
         self.lastX = None
         self.lastY = None
 
+        self.bgColor = "000000"
+
         # containers
         self.cameras: List[Camera] = []
         self.lights: List[PointLight] = []
-        self.meshes: List[Mesh] = []
+        self.models: List[Model] = []
         self.shaders: List[Shader] = []
-        self.textures: List[Texture] = []
         self.skyBox = None
         self.activeCameraIndex = 0  # change to change to the active camera
 
@@ -61,14 +57,11 @@ class Graph(QOpenGLWidget):
     def addLights(self, *lights: PointLight):
         self.lights.extend(lights)
 
-    def addMeshes(self, *meshes: Mesh):
-        self.meshes.extend(meshes)
+    def addModels(self, *models: Model):
+        self.models.extend(models)
 
     def addShaders(self, *shaders: Shader):
         self.shaders.extend(shaders)
-
-    def addTextures(self, *textures: Texture):
-        self.textures.extend(textures)
 
     @property
     def view(self) -> glm.mat4:
@@ -81,7 +74,7 @@ class Graph(QOpenGLWidget):
                                             / (viewport_data[3] - viewport_data[1]))  # height
 
     @staticmethod
-    def setBG(rgb: str):
+    def __setBG(rgb: str):
         GL.glClearColor(*fromRGB(rgb), 1.0)
 
     def keyPressEvent(self, event: QKeyEvent):
@@ -163,40 +156,39 @@ class Graph(QOpenGLWidget):
         GL.glEnable(GL.GL_BLEND)
         GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
 
-        self.model = Model(gltf.GLTFFile("extra/car.glb", True))
-
         # shader for all models
-        self.modelShader = Shader("viggy/shaders/model")
-        self.addShaders(self.modelShader)
+        self.modelShader = Shader("C:/Vignesh/Python/Viggy/viggy/shaders/model")
+        self.skyBoxShader = Shader("C:/Vignesh/Python/Viggy/viggy/shaders/sky_box")
+        self.addShaders(self.modelShader, self.skyBoxShader)
 
         self.modelShader.setUniform("material", ((1.0, 1.0, 1.0),
                                                  (1.0, 1.0, 1.0),
                                                  (1.0, 1.0, 1.0),
-                                                 16.0))
+                                                 32.0))
 
+        self.modelShader.setUniform("baseTexture", 0)
+
+    def paintGL(self):
+        # clear buffers
+        GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
+
+        self.__setBG(self.bgColor)
+
+        # set the view and projection matrices for all shaders
+        self.setVP()
+
+        # set lights and camera uniforms
+        self.modelShader.setUniform("cameraPos", self.activeCamera.position)
         self.modelShader.setUniform("light", (self.lights[0].position,
                                               self.lights[0].ambient,
                                               self.lights[0].diffuse,
                                               self.lights[0].specular,
                                               self.lights[0].k))
 
-    def paintGL(self):
-        # clear buffers
-        GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
+        # sky box should be first thing drawn
+        if self.skyBox:
+            self.skyBoxShader.use()
+            self.skyBox.draw()
 
-        # set the view and projection matrices for all shaders
-        self.setVP()
-
-        # light position
-        self.lights[0].position.x = math.sin(time.perf_counter())
-
-        # set lights and camera uniforms
-        self.modelShader.setUniform("cameraPos", self.activeCamera.position)
-        self.modelShader.setUniform("light.position", self.lights[0].position)
-
-        # model for test object, mesh and normal
-        model = glm.scale(glm.mat4(1.0), glm.vec3(1, 1, 1))
-
-        # draw test object
-        self.modelShader.setUniform("baseTexture", 0)
-        self.model.draw(self.modelShader, model)
+        for model in self.models:
+            model.draw(self.modelShader)
