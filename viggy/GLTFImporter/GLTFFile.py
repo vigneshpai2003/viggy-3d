@@ -50,16 +50,16 @@ class GLTFFile:
             with open(path, 'r') as f:
                 self.jsonData: dict = json.load(f)
 
-        self.scenes: List[Scene] = self.__makeArray("scenes")
-        self.nodes: List[Node] = self.__makeArray("nodes")
-        self.meshes: List[Mesh] = self.__makeArray("meshes")
-        self.materials: List[Material] = self.__makeArray("materials")
-        self.textures: List[Texture] = self.__makeArray("textures")
-        self.samplers: List[Sampler] = self.__makeArray("samplers")
-        self.images: List[Image] = self.__makeArray("images")
-        self.accessors: List[Accessor] = self.__makeArray("accessors")
-        self.bufferViews: List[BufferView] = self.__makeArray("bufferViews")
-        self.buffers: List[Buffer] = self.__makeArray("buffers")
+        self.scenes: List[Optional[Scene]] = self.__makeArray("scenes")
+        self.nodes: List[Optional[Node]] = self.__makeArray("nodes")
+        self.meshes: List[Optional[Mesh]] = self.__makeArray("meshes")
+        self.materials: List[Optional[Material]] = self.__makeArray("materials")
+        self.textures: List[Optional[Texture]] = self.__makeArray("textures")
+        self.samplers: List[Optional[Sampler]] = self.__makeArray("samplers")
+        self.images: List[Optional[Image]] = self.__makeArray("images")
+        self.accessors: List[Optional[Accessor]] = self.__makeArray("accessors")
+        self.bufferViews: List[Optional[BufferView]] = self.__makeArray("bufferViews")
+        self.buffers: List[Optional[Buffer]] = self.__makeArray("buffers")
 
         for i in range(len(self.jsonData["scenes"])):
             Scene(self, i)

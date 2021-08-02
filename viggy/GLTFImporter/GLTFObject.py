@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Type, TypeVar, List
+from typing import TYPE_CHECKING, Optional, Type, TypeVar, List
 
 if TYPE_CHECKING:
     from .GLTFFile import GLTFFile
@@ -16,7 +16,7 @@ def getFromJSONDict(jsonDict: dict, key: str, default=None):
     return jsonDict[key] if key in jsonDict else default
 
 
-def createGLTFObject(file: GLTFFile, cls: Type[T], arrayName: str, index: int, *args, **kwargs) -> T:
+def createGLTFObject(file: GLTFFile, cls: Type[T], arrayName: str, index: int, *args, **kwargs) -> Optional[T]:
     """
     returns cls(file, index) if such arguments have not already been passed.
     if arguments already passed, it will be stored in file.<arrayName>[index]
@@ -33,7 +33,8 @@ def createGLTFObject(file: GLTFFile, cls: Type[T], arrayName: str, index: int, *
         return getattr(file, arrayName)[index]
 
 
-def createFromKey(file: GLTFFile, cls: Type[T], arrayName: str, jsonDict: dict, key: str, *args, **kwargs) -> T:
+def createFromKey(file: GLTFFile, cls: Type[T], arrayName: str, jsonDict: dict, key: str,
+                  *args, **kwargs) -> Optional[T]:
     return createGLTFObject(file, cls, arrayName, jsonDict[key], *args, **kwargs) if key in jsonDict else None
 
 
@@ -58,10 +59,11 @@ class GLTFObject:
     def getFromJSONDict(self, key: str, default=None):
         return getFromJSONDict(self.jsonDict, key, default)
 
-    def createFromKey(self, cls: Type[T], arrayName: str, key: str, *args, **kwargs) -> T:
+    def createFromKey(self, cls: Type[T], arrayName: str, key: str, *args, **kwargs) -> Optional[T]:
         return createFromKey(self.file, cls, arrayName, self.jsonDict, key, *args, **kwargs)
 
-    def createArrayFromKey(self, cls: Type[T], arrayName: str, key: str, *args, **kwargs) -> List[T]:
+    def createArrayFromKey(self, cls: Type[T], arrayName: str, key: str,
+                           *args, **kwargs) -> Optional[List[Optional[T]]]:
         if key in self.jsonDict:
             return [createGLTFObject(self.file, cls, arrayName, i, *args, **kwargs) for i in self.jsonDict[key]]
         else:

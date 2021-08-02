@@ -13,7 +13,7 @@ class TextureInfo:
     def __init__(self, file: GLTFFile, infoDict: dict):
         self.jsonDict = infoDict
 
-        self.texture: Texture = createGLTFObject(file, Texture, "textures", self.jsonDict["index"])
+        self.texture = createGLTFObject(file, Texture, "textures", self.jsonDict["index"])
         self.texCoord: int = getFromJSONDict(self.jsonDict, "texCoord", 0)
 
 

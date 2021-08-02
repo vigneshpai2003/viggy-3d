@@ -8,8 +8,6 @@ if TYPE_CHECKING:
 import os
 import io
 
-import PIL.Image
-
 from .GLTFObject import GLTFObject
 from .BufferView import BufferView
 
@@ -25,12 +23,8 @@ class Image(GLTFObject):
         # mime type is defined when bufferView is not None, one of "image/jpeg" or "image/png"
         self.mimeType = self.getFromJSONDict("mimeType")
 
-        self.data = self.__getImgPath()
-
-    @staticmethod
-    def __convertImgToBytes(path):
-        with PIL.Image.open(path) as img:
-            return img.transpose(PIL.Image.FLIP_TOP_BOTTOM).tobytes()
+        # path to image data generally stored as png or jpg
+        self.path = self.__getImgPath()
 
     def __getImgPath(self):
         if self.uri is not None:

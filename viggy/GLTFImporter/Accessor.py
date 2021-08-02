@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional, List
 
 if TYPE_CHECKING:
     from .GLTFFile import GLTFFile
@@ -40,6 +40,7 @@ componentFormat = {ComponentType.BYTE: 'c',
                    ComponentType.UNSIGNED_INT: 'I',
                    ComponentType.FLOAT: 'f'}
 
+# to simplify things everything is stored as int or uint, can be optimized
 componentNumpyType = {ComponentType.BYTE: np.intc,
                       ComponentType.UNSIGNED_BYTE: np.uintc,
                       ComponentType.SHORT: np.intc,
@@ -61,10 +62,10 @@ class Accessor(GLTFObject):
     def __init__(self, file: GLTFFile, index: int):
         super().__init__(file, "accessors", index)
 
-        self.bufferView = self.createFromKey(BufferView, "bufferViews", "bufferView")
+        self.bufferView: BufferView = self.createFromKey(BufferView, "bufferViews", "bufferView")
 
         # type of the component as an int directly corresponding to OpenGL datatypes
-        self.componentType = ComponentType(self.jsonDict["componentType"])
+        self.componentType: ComponentType = ComponentType(self.jsonDict["componentType"])
 
         # type of attribute stored in bufferView
         self.type: str = self.jsonDict["type"]
@@ -77,8 +78,8 @@ class Accessor(GLTFObject):
 
         self.normalized: bool = self.getFromJSONDict("normalized", False)
 
-        self.min = self.getFromJSONDict("min")
-        self.max = self.getFromJSONDict("max")
+        self.min: Optional[List[float]] = self.getFromJSONDict("min")
+        self.max: Optional[List[float]] = self.getFromJSONDict("max")
 
         self.data = np.array(self.__getDataBuffer(), dtype=componentNumpyType[self.componentType])
 
