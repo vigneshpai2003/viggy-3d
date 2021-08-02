@@ -17,9 +17,9 @@ class MyGraph(Graph):
     def initializeGL(self):
         super().initializeGL()
 
-        self.skyBox = SkyBox("C:/Vignesh/Python/Viggy/viggy/skyboxes/ocean", "jpg")
+        self.skyBox = SkyBox("extra/skyboxes/ocean", "jpg")
 
-        camera = Camera(self, pos=glm.vec3(0, 0, 1),
+        camera = Camera(self, pos=glm.vec3(0, 0, 1.5),
                         fov=math.radians(45),
                         z_min=0.1, z_max=100.0)
         camera.setTarget(glm.vec3(0, 0, 0))
@@ -30,8 +30,11 @@ class MyGraph(Graph):
                    specular=glm.vec3(1, 1, 1),
                    k=glm.vec3(1, 0.2, 0.01))
 
-        model = Model(self, gltf.GLTFFile("C:/Vignesh/Python/Viggy/extra/car.glb", True))
-        # model.setTransform(glm.rotate(glm.scale(glm.mat4(), glm.vec3(.01, .01, .01)), math.radians(70), (1, 0, 0)))
+        car = Model(self, gltf.GLTFFile("extra/models/car.glb", True))
+        shark = Model(self, gltf.GLTFFile("extra/models/shark.glb", True))
+        troll = Model(self, gltf.GLTFFile("extra/models/troll.glb", True))
+        shark.setTransform(glm.translate(glm.mat4(), (.6, 0, 0)))
+        troll.setTransform(glm.translate(glm.mat4(), (-.6, 0, 0)))
 
 
 if __name__ == '__main__':

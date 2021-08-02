@@ -12,8 +12,23 @@ Ultimately meant to be a module for scientific visualization and basic 3D graphi
 
 Features:
 
- - Import GLTF 2.0 files (compatible with Paint3D and Blender)
- - High level API for adding cameras, lights and materials.
- - Automatically detect uniforms in your GLSL code!
+ - Import GLTF 2.0 files (.glb and .gltf)
+ - High level API for adding cameras, lights and models
+ - Automatically detect uniforms in your GLSL code! 
+ - Support for sky boxes
  - Embed in custom PySide application as a QOpenGLWidget
- - Support for cube-maps
+
+Coming Soon:
+
+ - 'Primitive' objects such as spheres, cubes, planes, etc
+ - Normal maps
+ - PBR lighting effects
+ - Instancing
+ - Tool for showing normal vectors and mesh triangles
+ - Different light casters
+ - Basic tools for data visualization
+    - scatter plots
+    - vector fields
+    - surfaces
+    - time variate 3d functions
+ - Basic GUI tools using PySide
