@@ -27,7 +27,7 @@ in VS_OUT {
 } fs_in;
 
 
-uniform sampler2D diffuseTexture;
+uniform sampler2D baseTexture;
 uniform Material material;
 uniform Light light;
 
@@ -65,6 +65,6 @@ vec3 calcLight(Material _material,
 void main()
 {
     gl_FragColor = vec4(calcLight(material, light, fs_in.position, cameraPos, fs_in.normal), 1.0) *
-                   texture(diffuseTexture, fs_in.UV);
+                   texture(baseTexture, fs_in.UV);
     // gl_FragColor = vec4(1, 1, 1, 1);
 }

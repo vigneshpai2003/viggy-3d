@@ -10,8 +10,10 @@ from PySide6.QtCore import QTimer, Qt
 from PySide6.QtGui import QMouseEvent, QSurfaceFormat, QKeyEvent
 from PySide6.QtOpenGLWidgets import QOpenGLWidget
 
+import viggy.GLTFImporter as gltf
+
 from viggy.Camera import Camera
-from viggy.Light import Light
+from viggy.PointLight import PointLight
 from viggy.Mesh import Mesh
 from viggy.Model import Model
 from viggy.Shader import Shader
@@ -34,7 +36,7 @@ class Graph(QOpenGLWidget):
 
         # containers
         self.cameras: List[Camera] = []
-        self.lights: List[Light] = []
+        self.lights: List[PointLight] = []
         self.meshes: List[Mesh] = []
         self.shaders: List[Shader] = []
         self.textures: List[Texture] = []
@@ -56,7 +58,7 @@ class Graph(QOpenGLWidget):
     def addCameras(self, *cameras: Camera):
         self.cameras.extend(cameras)
 
-    def addLights(self, *lights: Light):
+    def addLights(self, *lights: PointLight):
         self.lights.extend(lights)
 
     def addMeshes(self, *meshes: Mesh):
@@ -161,9 +163,9 @@ class Graph(QOpenGLWidget):
         GL.glEnable(GL.GL_BLEND)
         GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
 
-        # self.model = Model("backpackgltf/scene.gltf")
-        self.model = Model("extra/car.glb", True)
+        self.model = Model(gltf.GLTFFile("extra/car.glb", True))
 
+        # shader for all models
         self.modelShader = Shader("viggy/shaders/model")
         self.addShaders(self.modelShader)
 
@@ -177,10 +179,6 @@ class Graph(QOpenGLWidget):
                                               self.lights[0].diffuse,
                                               self.lights[0].specular,
                                               self.lights[0].k))
-
-        # initialize textures
-        self.modelTexture = Texture("backpackgltf/textures/Scene_-_Root_baseColor.jpeg")
-        self.addTextures(self.modelTexture)
 
     def paintGL(self):
         # clear buffers
@@ -200,5 +198,5 @@ class Graph(QOpenGLWidget):
         model = glm.scale(glm.mat4(1.0), glm.vec3(1, 1, 1))
 
         # draw test object
-        self.modelShader.setUniform("diffuseTexture", 0)
+        self.modelShader.setUniform("baseTexture", 0)
         self.model.draw(self.modelShader, model)

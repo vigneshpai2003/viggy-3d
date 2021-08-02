@@ -1,7 +1,7 @@
 import glm
 
 
-class Light:
+class PointLight:
     def __init__(self, pos: glm.vec3,
                  ambient: glm.vec3, diffuse: glm.vec3, specular: glm.vec3,
                  k: glm.vec3):

@@ -52,9 +52,9 @@ class Material(GLTFObject):
 
         # emmisive texture map
         if "emissiveTexture" in self.jsonDict:
-            self.emissiveTexture: Optional[TextureInfo] = TextureInfo(self.file, self.jsonDict["emissiveTexture"])
+            self.emissiveTextureInfo: Optional[TextureInfo] = TextureInfo(self.file, self.jsonDict["emissiveTexture"])
         else:
-            self.emissiveTexture: Optional[TextureInfo] = None
+            self.emissiveTextureInfo: Optional[TextureInfo] = None
 
         # multiply each value with R,G,B from emmisiveTexture Texel
         self.emissiveFactor: List[float, float, float] = self.getFromJSONDict("emissiveFactor", [0, 0, 0])
