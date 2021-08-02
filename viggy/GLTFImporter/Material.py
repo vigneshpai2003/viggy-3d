@@ -40,7 +40,7 @@ class Material(GLTFObject):
         self.occlusionTextureInfo = self.__getOcclusionTextureInfo()
 
         # emmisive texture map
-        self.emissiveTextureInfo = None
+        self.emissiveTextureInfo = self.__getEmissiveTextureInfo()
 
         # multiply each value with R,G,B from emmisiveTexture Texel
         self.emissiveFactor: List[float, float, float] = self.getFromJSONDict("emissiveFactor", [0, 0, 0])
@@ -64,6 +64,7 @@ class Material(GLTFObject):
 
 class PBRInfo:
     def __init__(self, file, pbrDict: dict):
+        self.file = file
         self.jsonDict = pbrDict
 
         # each component is in [0,1]
@@ -72,13 +73,10 @@ class PBRInfo:
         self.metallicFactor: float = getFromJSONDict(self.jsonDict, "metallicFactor", 1)
         self.roughnessFactor: float = getFromJSONDict(self.jsonDict, "roughnessFactor", 1)
 
-        if "baseColorTexture" in self.jsonDict:
-            self.baseColorTextureInfo = TextureInfo(file, self.jsonDict["baseColorTexture"])
-        else:
-            self.baseColorTextureInfo = None
+        self.baseColorTextureInfo = self.__getTextureInfo("baseColorTexture")
 
         # for every texel, G corresponds to roughness and B to metalness
-        if "metallicRoughnessTexture" in self.jsonDict:
-            self.metallicRoughnessTextureInfo = TextureInfo(file, self.jsonDict["metallicRoughnessTexture"])
-        else:
-            self.metallicRoughnessTextureInfo = None
+        self.metallicRoughnessTextureInfo = self.__getTextureInfo("metallicRoughnessTexture")
+
+    def __getTextureInfo(self, key):
+        return TextureInfo(self.file, self.jsonDict[key]) if key in self.jsonDict else None

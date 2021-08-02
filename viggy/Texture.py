@@ -19,9 +19,9 @@ class Texture:
 
         # send data to OpenGL
         # (texture_type, 0, internal format, width, height, border, OpenGL format, type, data)
-        GL.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA, img.width, img.height,
-                        0, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE,
-                        img.convert("RGBA").tobytes())
+        GL.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGB, img.width, img.height,
+                        0, GL.GL_RGB, GL.GL_UNSIGNED_BYTE,
+                        img.convert("RGB").tobytes())
         GL.glGenerateMipmap(GL.GL_TEXTURE_2D)  # needed because of GL_LINEAR_MIPMAP_LINEAR
 
     def bind(self, unit: int):

@@ -161,8 +161,8 @@ class Graph(QOpenGLWidget):
         GL.glEnable(GL.GL_BLEND)
         GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
 
-        self.model = Model("backpackgltf/scene.gltf")
-        # self.model = Model("extra/car.glb", True)
+        # self.model = Model("backpackgltf/scene.gltf")
+        self.model = Model("extra/car.glb", True)
 
         self.modelShader = Shader("viggy/shaders/model")
         self.addShaders(self.modelShader)
@@ -197,9 +197,8 @@ class Graph(QOpenGLWidget):
         self.modelShader.setUniform("light.position", self.lights[0].position)
 
         # model for test object, mesh and normal
-        model = glm.scale(glm.mat4(1.0), glm.vec3(.01, .01, .01))
+        model = glm.scale(glm.mat4(1.0), glm.vec3(1, 1, 1))
 
         # draw test object
-        self.modelTexture.bind(0)
         self.modelShader.setUniform("diffuseTexture", 0)
         self.model.draw(self.modelShader, model)

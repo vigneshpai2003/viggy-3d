@@ -25,7 +25,7 @@ class Image(GLTFObject):
         # mime type is defined when bufferView is not None, one of "image/jpeg" or "image/png"
         self.mimeType = self.getFromJSONDict("mimeType")
 
-        self.data = self.__convertImgToBytes(self.__getImgPath())
+        self.data = self.__getImgPath()
 
     @staticmethod
     def __convertImgToBytes(path):

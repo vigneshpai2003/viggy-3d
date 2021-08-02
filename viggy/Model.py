@@ -6,13 +6,14 @@ import viggy.GLTFImporter as gltf
 
 from .Mesh import Mesh
 from .Shader import Shader
+from .Texture import Texture
 
 
 class Model:
     def __init__(self, path, binary=False):
         self.root = gltf.GLTFFile(path, binary)
         self.meshes: List[Mesh] = []
-        self.rootMeshes: List[gltf.Mesh] = []
+        self.textures: List[Texture] = []
         self.transforms: List[glm.mat4x4] = []
 
         for rootNode in self.root.scene.rootNodes:
@@ -33,11 +34,12 @@ class Model:
                                         primitive.attributes.normal.data,
                                         primitive.attributes.texCoord0.data,
                                         primitive.indices.data))
-                self.rootMeshes.append(mesh)
+                self.textures.append(Texture(primitive.material.pbrInfo.baseColorTextureInfo.texture.image.data))
                 self.transforms.append(transform)
 
     def draw(self, shader: Shader, model: glm.mat4x4):
         for i in range(len(self.meshes)):
+            self.textures[i].bind(0)
             transform = model * self.transforms[i]
             shader.setUniform("model", glm.value_ptr(transform))
             self.meshes[i].draw()
