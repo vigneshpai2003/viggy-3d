@@ -4,20 +4,20 @@ import sys
 import glm
 from PySide6.QtWidgets import QApplication
 
-from viggy.Graph import Graph
-from viggy.Camera import Camera
-from viggy.PointLight import PointLight
-from viggy.Model import Model
-from viggy.SkyBox import SkyBox
+from viggy_3d.Graph import Graph
+from viggy_3d.Camera import Camera
+from viggy_3d.PointLight import PointLight
+from viggy_3d.Model import Model
+from viggy_3d.SkyBox import SkyBox
 
-import viggy.GLTFImporter as gltf
+import viggy_3d.GLTFImporter as gltf
 
 
 class MyGraph(Graph):
     def initializeGL(self):
         super().initializeGL()
 
-        self.skyBox = SkyBox("assets/skyboxes/ocean", "jpg")
+        self.skyBox = SkyBox("../assets/skyboxes/ocean", "jpg")
 
         camera = Camera(self, pos=glm.vec3(0, 0, 1.5),
                         fov=math.radians(45),
@@ -30,9 +30,9 @@ class MyGraph(Graph):
                    specular=glm.vec3(1, 1, 1),
                    k=glm.vec3(1, 0.2, 0.01))
 
-        car = Model(self, gltf.GLTFFile("assets/models/car.glb", True))
-        shark = Model(self, gltf.GLTFFile("assets/models/shark.glb", True))
-        troll = Model(self, gltf.GLTFFile("assets/models/troll.glb", True))
+        car = Model(self, gltf.GLTFFile("../assets/models/car.glb", True))
+        shark = Model(self, gltf.GLTFFile("../assets/models/shark.glb", True))
+        troll = Model(self, gltf.GLTFFile("../assets/models/troll.glb", True))
         shark.setTransform(glm.translate(glm.mat4(), (.6, 0, 0)))
         troll.setTransform(glm.translate(glm.mat4(), (-.6, 0, 0)))
 

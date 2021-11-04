@@ -7,8 +7,7 @@ if TYPE_CHECKING:
 
 import glm
 
-import viggy.GLTFImporter as gltf
-
+from .GLTFImporter import GLTFFile, Node, Mesh as gltfMesh, PrimitiveMode
 from .Mesh import Mesh
 from .Shader import Shader
 from .Texture import Texture
@@ -16,7 +15,7 @@ from .Material import Material
 
 
 class Model:
-    def __init__(self, graph: Graph, file: gltf.GLTFFile):
+    def __init__(self, graph: Graph, file: GLTFFile):
         self.graph = graph
         self.graph.addModels(self)
 
@@ -38,7 +37,7 @@ class Model:
     def setTransform(self, transform: glm.mat4):
         self.transform = transform
 
-    def __processNode(self, node: gltf.Node):
+    def __processNode(self, node: Node):
         if node.mesh:
             self.__processMesh(node.mesh, node.globalTransform)
 
@@ -46,9 +45,9 @@ class Model:
             for childNode in node.children:
                 self.__processNode(childNode)
 
-    def __processMesh(self, mesh: gltf.Mesh, transform: glm.mat4x4):
+    def __processMesh(self, mesh: gltfMesh, transform: glm.mat4x4):
         for primitive in mesh.primitives:
-            if primitive.mode is gltf.PrimitiveMode.TRIANGLES:
+            if primitive.mode is PrimitiveMode.TRIANGLES:
                 self.meshes.append(Mesh(primitive.attributes.position.data,
                                         primitive.attributes.normal.data,
                                         primitive.attributes.texCoord0.data,

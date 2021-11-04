@@ -1,7 +1,7 @@
 from enum import IntEnum
 from typing import Optional
 
-from viggy.GLTFImporter.GLTFObject import GLTFObject
+from src.viggy_3d.GLTFImporter.GLTFObject import GLTFObject
 
 
 class TextureMagFilter(IntEnum):

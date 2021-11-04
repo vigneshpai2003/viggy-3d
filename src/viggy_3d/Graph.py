@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import math
+import os
 from typing import List
 
 import glm
@@ -157,8 +158,8 @@ class Graph(QOpenGLWidget):
         GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
 
         # shader for all models
-        self.modelShader = Shader("C:/Vignesh/Python/Viggy/viggy/shaders/model")
-        self.skyBoxShader = Shader("C:/Vignesh/Python/Viggy/viggy/shaders/sky_box")
+        self.modelShader = Shader(os.path.join(os.path.dirname(__file__), "shaders/model"))
+        self.skyBoxShader = Shader(os.path.join(os.path.dirname(__file__), "shaders/sky_box"))
         self.addShaders(self.modelShader, self.skyBoxShader)
 
         self.modelShader.setUniform("material", ((1.0, 1.0, 1.0),
