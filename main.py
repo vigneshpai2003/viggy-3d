@@ -17,7 +17,7 @@ class MyGraph(Graph):
     def initializeGL(self):
         super().initializeGL()
 
-        self.skyBox = SkyBox("extra/skyboxes/ocean", "jpg")
+        self.skyBox = SkyBox("assets/skyboxes/ocean", "jpg")
 
         camera = Camera(self, pos=glm.vec3(0, 0, 1.5),
                         fov=math.radians(45),
@@ -30,9 +30,9 @@ class MyGraph(Graph):
                    specular=glm.vec3(1, 1, 1),
                    k=glm.vec3(1, 0.2, 0.01))
 
-        car = Model(self, gltf.GLTFFile("extra/models/car.glb", True))
-        shark = Model(self, gltf.GLTFFile("extra/models/shark.glb", True))
-        troll = Model(self, gltf.GLTFFile("extra/models/troll.glb", True))
+        car = Model(self, gltf.GLTFFile("assets/models/car.glb", True))
+        shark = Model(self, gltf.GLTFFile("assets/models/shark.glb", True))
+        troll = Model(self, gltf.GLTFFile("assets/models/troll.glb", True))
         shark.setTransform(glm.translate(glm.mat4(), (.6, 0, 0)))
         troll.setTransform(glm.translate(glm.mat4(), (-.6, 0, 0)))
 
