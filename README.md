@@ -1,9 +1,21 @@
 # viggy-3d
 
-### This module is yet to be properly setup, will be cleaned soon
-
 This module is meant to be an alternative to using vpython.
 Uses PySide 6 for OpenGL context.
+
+## Installation
+
+`> git clone https://github.com/vigneshpai2003/viggy-3d.git`
+
+`> cd viggy-3d`
+
+`> pip install -r requirements.txt`
+
+`> pip install .`
+
+Try running any of the examples in samples folder
+
+## Features:
 
 Users can create models in Blender, Paint3D etc and export them as GLTF encoded files.
 Supports nodes, meshes, materials, textures.
@@ -11,8 +23,6 @@ No support for animations, bones and skins.
 No support for exporting models.
 
 Ultimately meant to be a module for scientific visualization and basic 3D graphics.
-
-Features:
 
  - Import GLTF 2.0 files (.glb and .gltf)
  - High level API for adding cameras, lights and models
