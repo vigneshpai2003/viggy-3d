@@ -1,9 +1,4 @@
-.idea/
-__pycache__/
-viggy/__pycache__/
-viggy/GLTFImporter/__pycache__/
-backpack/
-extra/backpackgltf/
-textures/
-extra/
-test.py
+/.idea/
+/__pycache__/
+/viggy/__pycache__/
+/viggy/GLTFImporter/__pycache__/

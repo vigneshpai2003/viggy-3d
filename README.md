@@ -1,5 +1,7 @@
 # viggy-3d
 
+### This module is yet to be properly setup, will be cleaned soon
+
 This module is meant to be an alternative to using vpython.
 Uses PySide 6 for OpenGL context.
 
