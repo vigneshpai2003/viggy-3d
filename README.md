@@ -45,4 +45,4 @@ Coming Soon:
     - time variate 3d functions
  - Basic GUI tools using PySide
 
-![Model Rendering](https://github.com/vigneshpai2003/viggy-3d/blob/master/screenshots/model_rendering.png?raw=True)
+![Model Rendering](https://github.com/vigneshpai2003/viggy-3d/blob/main/screenshots/model_rendering.png?raw=True)
