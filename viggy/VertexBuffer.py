@@ -12,13 +12,9 @@ import OpenGL.GL as GL
 
 class VertexBuffer:
     def __init__(self, vertices: np.ndarray, normals: np.ndarray, texCoord: np.ndarray):
-        self.vertices = vertices
-        self.normals = normals
-        self.texCoord = texCoord
-
         # create the OpenGL buffer
         self.glBuffer = GL.glGenBuffers(1)
-        self.bind()
+        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.glBuffer)
 
         # allocate memory
         GL.glBufferData(GL.GL_ARRAY_BUFFER, vertices.nbytes + normals.nbytes + texCoord.nbytes, None, GL.GL_STATIC_DRAW)
@@ -39,6 +35,3 @@ class VertexBuffer:
         GL.glEnableVertexAttribArray(2)
         GL.glVertexAttribPointer(
             2, 2, GL.GL_FLOAT, GL.GL_FALSE, 2 * 4, ctypes.c_void_p(vertices.nbytes + normals.nbytes))
-
-    def bind(self):
-        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.glBuffer)
