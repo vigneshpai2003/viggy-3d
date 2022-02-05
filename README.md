@@ -1,6 +1,6 @@
 # viggy-3d
 
-This module is meant to be an alternative to using vpython.
+Module for using raw OpenGL via a high level interface in python.
 Uses PySide 6 for OpenGL context.
 
 ## Installation
