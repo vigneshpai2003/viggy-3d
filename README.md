@@ -11,7 +11,14 @@ Uses PySide 6 for OpenGL context.
 
 3. `pip install .`
 
-Try running any of the examples in samples folder
+   or
+
+   `pip install -e .` (for editable installation)
+
+Try running any of the examples in samples folder.
+
+1. `cd samples`
+2. `python example.py`
 
 ## Features:
 
