@@ -1,7 +1,7 @@
 /.idea/
-/__pycache__/
-/src/viggy_3d/__pycache__/
-/src/viggy_3d/GLTFImporter/__pycache__/
+__pycache__
+
 /venv/
 /src/viggy_3d.egg-info/
 /build/
+/dist/

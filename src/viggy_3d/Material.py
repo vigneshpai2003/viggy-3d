@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, List, Optional
 if TYPE_CHECKING:
     from .Texture import Texture
 
-import src.viggy_3d.GLTFImporter as gltf
+import viggy_3d.GLTFImporter as gltf
 
 
 class Material:

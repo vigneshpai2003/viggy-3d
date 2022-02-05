@@ -5,13 +5,11 @@ Uses PySide 6 for OpenGL context.
 
 ## Installation
 
-`> git clone https://github.com/vigneshpai2003/viggy-3d.git`
+1. Clone and optionally create virtual environment
 
-`> cd viggy-3d`
+2. `pip install -r requirements.txt`
 
-`> pip install -r requirements.txt`
-
-`> pip install .`
+3. `pip install .`
 
 Try running any of the examples in samples folder
 

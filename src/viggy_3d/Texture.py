@@ -1,7 +1,7 @@
 import OpenGL.GL as GL
 from PIL import Image
 
-import src.viggy_3d.GLTFImporter as gltf
+import viggy_3d.GLTFImporter as gltf
 
 
 GLMinFilter = {gltf.TextureMinFilter.NEAREST: GL.GL_NEAREST,
