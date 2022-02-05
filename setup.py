@@ -18,5 +18,6 @@ setuptools.setup(
     ],
     package_dir={"": "src"},
     packages=setuptools.find_packages(where="src"),
+    package_data={"": ["*.glsl"]},
     python_requires=">=3.8",
 )
