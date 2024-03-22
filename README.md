@@ -5,6 +5,8 @@ Uses PySide 6 for OpenGL context.
 
 ## Installation
 
+Note that the necessary Qt dependencies must be installed on your system, on Ubuntu (wayland), these were the packages: `qtwayland5`, `libxcb-cursor0`, `libxkbcommon-x11-0`.
+
 1. Clone and optionally create virtual environment
 
 2. `pip install -r requirements.txt`
